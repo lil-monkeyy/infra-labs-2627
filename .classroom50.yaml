@@ -1,0 +1,12 @@
+schema: "classroom50/repo-config/v1"
+classroom: "infra-2627"
+assignment: "infra-labs-2627"
+owner:
+  username: "lil-monkeyy"
+  id: 188256629
+  accepted_at: "2026-09-22T12:53:57Z"
+source:
+  owner: "HoGentTIN"
+  owner_id: 6681545
+  repo: "infra-labs"
+  branch: "main"
