@@ -1,0 +1,98 @@
+# ansible/roles/dockerhost/tasks/main.yml
+# Set up the VM as a test environment for Ansible roles, based on Docker and
+# Molecule.
+---
+
+- name: "Include distribution specific variables"
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version'] }}.yml"
+    - "{{ ansible_facts['distribution'] }}.yml"
+    - "{{ ansible_facts['os_family'] }}.yml"
+  tags: dockerhost
+
+- name: "Ensure the necessary packages are installed"
+  ansible.builtin.apt:
+    name: "{{ dockerhost_packages }}"
+    state: present
+    update_cache: true
+  tags: dockerhost
+
+- name: "Ensure the Docker group exists"
+  ansible.builtin.group:
+    name: docker
+    state: present
+  tags: dockerhost
+
+- name: "Ensure admin user is a member of the Docker group"
+  ansible.builtin.user:
+    name: "{{ dockerhost_admin_user }}"
+    groups:
+      - docker
+  tags: dockerhost
+
+- name: "Ensure Docker daemon metrics can be scraped by Prometheus"
+  ansible.builtin.template:
+    src: etc_docker_daemon.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: '0644'
+  notify: "Restart Docker"
+  tags: dockerhost
+
+- name: "Ensure necessary services are running and enabled"
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items: "{{ dockerhost_services }}"
+  tags: dockerhost
+
+- name: "Enable some useful aliases for managing Docker"
+  ansible.builtin.copy:
+    src: docker-aliases.sh
+    dest: /etc/profile.d/docker-aliases.sh
+    owner: root
+    group: root
+    mode: '0644'
+  tags: dockerhost
+
+- name: "Create a Docker volume for persistent data"
+  community.docker.docker_volume:
+    volume_name: "{{ item }}"
+    state: present
+  with_items: "{{ dockerhost_volumes }}"
+  tags: dockerhost
+
+# We create a separate network for permanent containers, so the first containers
+# spun up by students get the expected, default IP address. We specify the
+# subnet, since we will need the IP address of the host system and we want that
+# to be predictable.
+- name: "Create a Docker internal network for permanent containers"
+  community.docker.docker_network:
+    name: mgmt_net
+    ipam_config:
+      - subnet: "{{ dockerhost_subnet }}"
+        gateway: "{{ dockerhost_ip }}"
+  tags: dockerhost
+
+- name: "Create a Docker container for Portainer"
+  community.docker.docker_container:
+    name: portainer
+    image: portainer/portainer-ce
+    state: started
+    restart_policy: always
+    ports:
+      - 8000:8000
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    comparisons:
+      networks: strict
+    networks:
+      - name: mgmt_net
+    networks_cli_compatible: true
+    network_mode: default
+  tags: dockerhost

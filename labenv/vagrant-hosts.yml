@@ -1,0 +1,49 @@
+# vagrant_hosts.yml
+#
+# List of hosts to be created by Vagrant. For more information about the
+# possible settings, see the documentation at
+# <https://github.com/bertvv/vagrant-shell-skeleton>
+---
+
+# Will host the Jenkins build server deployed as a Docker container
+- name: infra010
+  box: bento/debian-13
+  ip: 172.16.0.10
+  netmask: 255.255.0.0
+
+# Control node - has Ansible installed. From this VM, you control the
+#  configuration of the entire lab environment
+- name: control
+  box: bento/almalinux-10
+  ip: 172.16.0.2
+  netmask: 255.255.0.0
+
+# Example of a more elaborate host definition
+# - name: srv002
+#   box: bento/debian-13
+#   memory: 4096
+#   cpus: 2
+#   ip: 172.20.0.10
+#   netmask: 255.255.0.0
+#   mac: '13:37:de:ad:be:ef'
+#   playbook: srv002.yml
+#   forwarded_ports:
+#     - host: 8080
+#       guest: 80
+#     - host: 8443
+#       guest: 443
+#   disks:
+#     - name: disk1
+#       size: 10GB
+#     - name: disk2
+#       size: 10GB
+#   synced_folders:
+#     - src: test
+#       dest: /tmp/test
+#     - src: www
+#       dest: /var/www/html
+#       options:
+#         :create: true
+#         :owner: root
+#         :group: root
+#         :mount_options: ['dmode=0755', 'fmode=0644']

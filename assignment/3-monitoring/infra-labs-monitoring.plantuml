@@ -1,0 +1,88 @@
+@startuml infra-labs-monitoring
+
+' System admin and end-user actors
+actor Ops
+actor User
+
+' DMZ network with public-facing services
+frame dmz {
+    ' DNS server for the infra.lan domain
+    node dmz003 {
+        [dns1]
+        [node_exporter1]
+    }
+    ' Web server
+    node dmz010 {
+        [reverse_proxy]
+        [app1]
+        [app2]
+        [app3]
+        [node_exporter2]
+    }
+    ' Database server
+    node dmz020 {
+        database db
+        [node_exporter3]
+    }
+}
+
+' Internal network with control and infrastructure nodes
+frame internal {
+    ' Ansible control node
+    node control {
+        [ssh]
+        [node_exporter4]
+    }
+    ' Stealth DNS server
+    node infra003 {
+        [dns2]
+        [node_exporter5]
+    }
+    ' Jenkins build server
+    node infra010 {
+        [jenkins]
+        [node_exporter6]
+    }
+    ' Monitoring stack
+    node infra020 {
+        [grafana]
+        [prometheus]
+        [node_exporter7]
+    }
+}
+
+' Communication between components
+
+' Ops will SSH into the control node as the main way to manage the
+' infrastructure
+Ops --> ssh : :ssh
+Ops --> jenkins : :9000
+Ops -[#purple]-> grafana : :http(s)
+
+' Grafana will query Prometheus for metrics data, Prometheus will query the
+' node_exporter instances
+grafana -[#purple]-> prometheus
+prometheus -[#purple]-> node_exporter1
+prometheus -[#purple]-> node_exporter2
+prometheus -[#purple]-> node_exporter3
+prometheus -[#purple]-> node_exporter4
+prometheus -[#purple]-> node_exporter5
+prometheus -[#purple]-> node_exporter6
+prometheus -[#purple]-> node_exporter7
+
+' Jenkins deploys the web application to the DMZ web server
+jenkins --> dmz010
+
+' End-users will access the public website through the load balancer, which
+' will distribute the requests to the web servers, which will query the database
+User -[bold;#green]-> reverse_proxy : :https
+
+reverse_proxy -[bold;#green]-> app1 : :http
+reverse_proxy -[bold;#green]-> app2 : :http
+reverse_proxy -[bold;#green]-> app3 : :http
+
+app1 -[bold;#green]-> db : :mysql
+app2 -[bold;#green]-> db : :mysql
+app3 -[bold;#green]-> db : :mysql
+
+@enduml

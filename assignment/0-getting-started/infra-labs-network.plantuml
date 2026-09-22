@@ -1,0 +1,56 @@
+@startnwdiag infra-labs-network
+
+' set higher resolution for print
+skinparam dpi 300
+
+' set legend options
+skinparam legendBackgroundColor #FFFFFF
+skinparam legendBorderColor #FFFFFF
+skinparam legendEntrySeparator #FFFFFF
+
+nwdiag {
+    inet [shape = cloud, description = "internet" ];
+    inet -- vboxnat;
+
+    network NAT {
+        address = "10.0.2.0/24";
+
+        vboxnat [ address = "10.0.2.1" , color = "#FABC32", shape = storage ];
+        r001 [ address = "10.0.2.15" ];
+    }
+
+    network guest {
+        address = "192.168.76.0/24";
+        workstation [ address = "192.168.76.nnn",  color = "#A5CA72"  ];
+        r001 [ address = "192.168.76.254",  color = "#A5CA72" , shape = storage ];
+        host [ address = "192.168.76.1", color = "#4CA2D5" ];
+    }
+
+    network dmz {
+        address = "192.0.2.0/24";
+        
+        r001  [ address = "192.0.2.254",  color = "#A5CA72" , shape = storage ];
+        host [ address = "192.0.2.1" ];
+
+        dmz003 [ address = "192.0.2.3", color = "#A5CA72" ];
+        dmz010 [ address = "192.0.2.10", color = "#A5CA72" ];
+        dmz020 [ address = "192.0.2.20", color = "#A5CA72" ];
+    }
+
+    network internal {
+        address = "172.16.0.0/16";
+        host [ address = "172.16.0.1" ];
+        r001 [ address = "172.16.255.254" ];
+        infra003 [ address = "172.16.0.3" , color = "#A5CA72"];
+        infra010 [ address = "172.16.0.10" , color = "#A5CA72"];
+        infra020 [ address = "172.16.0.20" , color = "#A5CA72"];
+        control [ address = "172.16.0.2" , color = "#A5CA72" ]
+    }
+
+    legend bottom
+        |<#FABC32>        | Simulated by VBox |
+        |<#4CA2D5>        | Physical system   |
+        |<#A5CA72>        | Virtual Machine   |
+    endlegend
+}
+@endnwdiag

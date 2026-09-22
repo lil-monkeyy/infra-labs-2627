@@ -1,0 +1,19 @@
+# ansible/roles/dockerhost/defaults/main.yml
+#
+# Default values for role variables
+---
+
+# Subnet IP for the Docker network `mgmt_net` all "permanent" containers for
+# monitoring will be attached to.
+dockerhost_subnet: "172.30.0.0/16"
+
+# IP address of the Docker host system in this network
+dockerhost_ip: "172.30.0.1"
+
+# Name of the user that will be added to the Docker group, so it can run Docker
+# commands without `sudo`.
+dockerhost_admin_user: "vagrant"
+
+# Names of persistent data volumes to be created
+dockerhost_volumes:
+  - portainer_data

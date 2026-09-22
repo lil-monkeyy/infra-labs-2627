@@ -1,0 +1,7 @@
+# ansible/site.yml -- main playbook for the lab environment
+---
+
+- name: "Configure infra010"
+  hosts: infra010
+  roles:
+    - dockerhost

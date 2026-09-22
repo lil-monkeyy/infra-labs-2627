@@ -1,0 +1,4 @@
+{
+    "metrics-addr" : "{{ dockerhost_ip }}:9323",
+    "experimental" : true
+}

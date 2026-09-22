@@ -1,0 +1,14 @@
+# ansible/roles/dockerhost/vars/Debian.yml
+---
+dockerhost_packages:
+  - bash-completion
+  - curl
+  - docker.io
+  - docker-clean
+  - docker-compose
+  - python3-docker
+  - python3-netaddr
+  - python3-pip
+
+dockerhost_services:
+  - docker.service
