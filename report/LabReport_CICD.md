@@ -1,3 +1,4 @@
+# Lab Report: CICD
 ## 1.1 Initialize the application repositories
 
 You will also need GitHub repositories with the two applications to be deployed. Create a new Git repository (this can be on your physical system, where Git and access to GitHub is already configured). Some starter code is provided in directory [cicd-sample-app](1-cicd/cicd-sample-app/).
