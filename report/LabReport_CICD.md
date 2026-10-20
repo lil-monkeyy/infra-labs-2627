@@ -25,33 +25,23 @@ Dit is allemaal heel goed verlopen en botste tegen geen enkel probleem.
       --name jenkins_server jenkins/jenkins:lts
     ```
 
-1. Open a browser tab and point it to <http://172.16.0.10:8080/>. You are asked to enter the administrator password that you recorded in the previous step. Next, Jenkins will ask which plugins you want to have installed. Choose to install the recommended plugins. After this, Jenkins will initialize, which takes some time. You can follow the progress on the web page.
-2. When the initialization process finishes, you are redirected to a page that asks you to create an admin user. For now, you can skip this and continue as admin by following the link at the bottom.
-3. On the next page, titled "Instance Configuration", just click "Save and Finish" and then "Start using Jenkins".
-
 Docker image pullen en koppelen aan een poort was heel vanzelfsprekend samen met de configuratie, geen problemen gehad en alles verliep vlot.
 
 ## 1.3 Use Jenkins to build your application
 
-1. On the Jenkins dashboard, click "Create a new job". Enter a suitable name, e.g. *BuildSampleApp*. Select a "Freestyle project" as job type.
-2. The following page allows you to configure the new job. There are a lot of options, so you may be overwhelmed at first.
-    - Optionally, enter a description
-    - In the section "Source Code Management", select the radio button "Git" and enter the https-URL to your GitHub project, `https://github.com/USER/cicd-sample-app.git`
-    - Since your repository is public it is not necessary to enter credentials.
-    - The branch to be built should be `*/main` instead of the default `*/master`
-    - In the section "Build Steps", click "Add a build step" and select "Execute shell" from the dropdown list. enter `bash ./sample-app.sh`
-    - Click "Save". You are redirected to the Jenkins dashboard
-3. The dashboard shows an overview of all build jobs. Click the job you just created and in the menu on the left, start a new build job (*"Build Now"*).
-    - Hopefully, the build succeeds. Use the overview of build attempts to view the console output of the build process to. If the build process failed this is where you can find error messages that can help to determine the cause.
-4. Ensure the sample application is running by reloading the appropriate browser tab.
+### job maken op jenkins
 ![job maken op jenkins](<../Images/Schermafbeelding 2026-10-19 170826.png>)
-![sample app job script](<../Images/Schermafbeelding 2026-10-19 171134.png>)
+
 Nadat je Jenkins verteld waar het je repo met het project kan vinden, geef je een commando mee dat hij moet doen. 
 Als je een script maakt moet je altijd weten waar je staat in de directory, in mijn geval zit ik in de rootfolder van mijn gitrepi. Ik verwijs naar een shell script dat staat op een andere folder en daarvoor zet ik 'bash' om het shell script te runnen. Dit gaat dan de sample app bouwen in python en in een container zetten op docker
+
+###resultaat sample app job
 ![resultaat sample app job](<../Images/Schermafbeelding 2026-10-19 171134.png>)
 
+### checken op welke poort sample app staat
 ![checken op welke poort sample app staat](<../Images/Schermafbeelding 2026-10-19 171807.png>)
 
+### sample app dat goed runned
 ![sample app dat goed runned](<../Images/Schermafbeelding 2026-10-19 171504.png>)
 
 ## 1.4 Add a job to test the application
