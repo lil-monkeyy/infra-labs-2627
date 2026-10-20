@@ -46,23 +46,21 @@ Docker image pullen en koppelen aan een poort was heel vanzelfsprekend samen met
 4. Ensure the sample application is running by reloading the appropriate browser tab.
 ![job maken op jenkins](<../Images/Schermafbeelding 2026-10-19 170826.png>)
 ![sample app job script](<../Images/Schermafbeelding 2026-10-19 171134.png>)
-
+Nadat je Jenkins verteld waar het je repo met het project kan vinden, geef je een commando mee dat hij moet doen. 
+Als je een script maakt moet je altijd weten waar je staat in de directory, in mijn geval zit ik in de rootfolder van mijn gitrepi. Ik verwijs naar een shell script dat staat op een andere folder en daarvoor zet ik 'bash' om het shell script te runnen. Dit gaat dan de sample app bouwen in python en in een container zetten op docker
 ![resultaat sample app job](<../Images/Schermafbeelding 2026-10-19 171134.png>)
 
 ![checken op welke poort sample app staat](<../Images/Schermafbeelding 2026-10-19 171807.png>)
 
 ![sample app dat goed runned](<../Images/Schermafbeelding 2026-10-19 171504.png>)
-## 1.4 Add a job to test the application
 
-We will now create another job that runs an acceptance test after the build process has finished.
+## 1.4 Add a job to test the application
 
 Before you begin, you need to know the IP address of both the `sampleapp` and `jenkins_server` container. Find the IP address and ensure that the app is available with `curl http://APP_IP:5050/`. The output should contain a line with the client's IP address:
 
 ```text
    <h1>You are calling me from 172.16.0.10</h1>
 ```
-
-Remark that 172.16.0.10 is the IP address of the Docker host, i.e. your `infra010` VM. Our acceptance test will consist of running the curl command from the Jenkins server, which will have a different IP address.
 
 1. On the Jenkins dashboard, click "Create a new job". Enter a suitable name, e.g. *TestSampleApp*. Select a "Free  style project" as job type. Optionally, add a description.
 2. Under section "Build Triggers", select checkbox "Build after other projects are built". In the text field "Projects to watch", enter the name of the build job.
@@ -75,17 +73,9 @@ Remark that 172.16.0.10 is the IP address of the Docker host, i.e. your `infra01
     replacing `APP_IP` and `JENKINS_IP` with the appropriate IP addresses.
 4. Save and run the job to verify if it succeeds
 
-    Jenkins can determine whether the job succeeded or failed using the exit status of the command given. When `grep` finds a matching line in the standard output of `curl`, it will finish with exit status 0 (indicating success). If not, it will have exit status 1 (indicating failure). If the command returns a nonzero exit status, it will consider the job to be failed.
-
-    Remark that this is not exactly a full-fledged acceptance test. In a real-life application, you would probably launch a test suite that has to be installed on the Jenkins server.
-
-    You could write a bash script that's a bit more useful than the command specified above. For example, if the job fails, the console output will not give you any clue as to why. In case of a failure to find the expected IP address in the output of `curl`, you could print the actual output on the console.
-
 5. The Jenkins dashboard should now list both the build and test job. Stop and remove the `samplerunning` container and then launch the build job. If you encounter an error try figuring out what is going on. There are multiple ways to tackle this issue either in Jenkins with a correct configuration option or by carefully improving the sample-app.sh script.
 
 ## 1.5 Create a build pipeline
-
-The build process in a real-life application is usually much more complex. A full-fledged Continuous Integration/Delivery (CI/CD) pipeline will usually consist of more steps than the ones discussed here (e.g. linting, static code analysis, unit tests, integration tests, acceptance tests, performance tests, packaging and deployment in a production environment). This lab assignment, probably your first encounter with a CI/CD tool is a bit simpler, but should give you an idea of what's possible.
 
 In the next step, we will set up a complete build pipeline that, if the build and test steps succeed, will launch your application as a Docker container.
 
@@ -115,14 +105,17 @@ In the next step, we will set up a complete build pipeline that, if the build an
     - The build job is launched
     - The acceptance job is launched
 
-    Be sure to enter the correct names of the jobs if you have chosen your own names! Finally, save the pipeline.
 3. Next, start a build. Jenkins will show you how each phase of the pipeline progresses. Check the console output of each phase.
 4. If the run succeeds, the application should be running. Verify by opening it in a web browser.
+
+Ik heb dit in het begin zo gedaan maar ben dan overgeschakeld naar een Jenkinsfile omdat dit veel makkelijker te onderhouden valt dan al je scripts op Jenkins zelf te zetten. Als je bijvoorbeeld Jenkins op een andere server gaat zetten, dan kan je in de nieuwe jenkins gewoon verwijzen naar de Jenkinsfile op Github in plaats van het script op Jenkins opnieuw maken.
+
 ## 1.6 Use a Jenkinsfile
 
-You can automate the configuration of the build pipeline by adding a `Jenkinsfile` to the root of the application Git repository. For this case, you can use the code for the the pipeline definition in the previous step. Add the jenkinsfile to the root of the Git repository, remove the pipeline from the Jenkins dashboard, create a new pipeline for the Git repository and launch it. The pipeline should run as before!
+Dit is een aanpak dat me het meest lag omdat dit persoonlijk het makkelijkst te onderhouden is, in dit script verwijs ik naar mijn publieke gitrepo, daarna toon ik de inhoud van de jenkinsfile op de console en in de laatste stap run ik het.
 ![pipeline script sample app](<../Images/Schermafbeelding 2026-10-19 172301.png>)
 
+Dit is het script dat in mijn Jenkinsfile staat, in de eerste fase gaat het de huidige container waar de op in runned stoppen en verwijderen. In de 2de stap wordt de Jenkinsjob gerunned dat de app opnieuw maakt en in een container zet en in de laatste stap wordt er een curl gedaan naar de url waar de app staat om te checken of er een antwoord komt.
 Jenkinsfile:
 	node {
 
@@ -145,22 +138,12 @@ Jenkinsfile:
 
 ## 1.7 Make a change in the application
 
-In this final step, we will make a change in the application, re-launch the build pipeline and view the result in the browser.
-
-1. Go to your local copy of the Git repository with the sample application. Open file `static/style.css` and change the page background color from "lightsteelblue" into whatever you want.
-2. Save the file, commit your changes and push them to GitHub.
-3. In the Jenkins dashboard, launch the build pipeline.
-4. Reload the application in the web browser, it should have a different background colour now!
+Voor deze stap moest ik terwijl de app actief was de achtergrondkleur van de pagina eens aanpassen, het pipelinescript starten en dan checken of de aanpassing uitgevoerd wordt. Dit was heel vanzelfsprekend en had hier geen problemen mee.
 ![aanpassing sample app](<../Images/Schermafbeelding 2026-10-19 173109.png>)
 
 ![Sample app met andere kleur](<../Images/Schermafbeelding 2026-10-19 173416.png>)
 
 ## 1.8 Create a build pipeline for a .Net application
-
-The steps above should have given you a good idea of how to set up a build pipeline for a simple application. Now do the same for one of the following .Net applications:
-
-- A demo todo application with a MariaDB backend: <https://github.com/HoGentTIN/dotnet-demo-app>
-- The RISE project template application: <https://github.com/HOGENT-RISE/2526-dotnet-template>. It has a SQLite backend by default, but you can change it to a different database backend.
 
 Build instructions can be found in the README file of the GitHub repository.
 
@@ -175,6 +158,9 @@ In vergelijking met de cicd-sampleapp, had ik met de .NET todo-app een groter pr
 
 - Op jenkins: (settings -> plugins -> available plugins)
 ![plugin op jenkins](<../Images/Schermafbeelding 2026-10-19 174622.png>)
+
+De url en credentials verwijzen naar mijn github repo van deze applicatie, aangezien het een private repo is, heb ik credentials moeten instellen op jenkins en een token gemaakt op github. In de github repo staat een docker-compose.yml dat de applicatie maakt, dat door het commando in de 'Build' stap wordt geactiveerd.
+Na het runnen van de job wordt de containers met de app en database aangemaakt, als je surft naar de juiste poort zie je dat de app werkt en je todo's kan toevoegen, doorkruisen en verwijderen.
 
 - Pipeline script .NET app:
 	pipeline {
@@ -194,9 +180,6 @@ In vergelijking met de cicd-sampleapp, had ik met de .NET todo-app een groter pr
 	    }
 	}
 
-De url en credentials verwijzen naar mijn github repo van deze applicatie, aangezien het een private repo is, heb ik credentials moeten instellen op jenkins en een token gemaakt op github. In de github repo staat een docker-compose.yml dat de applicatie maakt.
 ![.NETapp job dat succes levert](<../Images/Schermafbeelding 2026-10-19 175837.png>)
 
 ![Todo-App result](<../Images/Schermafbeelding 2026-10-19 180037.png>)
-
-Na het runnen van de job wordt de containers met de app en database aangemaakt, als je surft naar de juiste poort zie je dat de app werkt en je todo's kan toevoegen, doorkruisen en verwijderen.
