@@ -48,7 +48,13 @@ dnf install --assumeyes \
 
 sudo --login --non-interactive --user=vagrant -- \
   sh -c "pip install ansible && cd /vagrant/ansible && ansible-galaxy install -r requirements.yml"
+
+log "Copying vault password file"
+  cp /vagrant/.vault_pass /home/vagrant/.vault_pass
+  chown vagrant:vagrant /home/vagrant/.vault_pass
+  chmod 600 /home/vagrant/.vault_pass"
+
 log "Running Ansible site playbook"
 
 sudo --login --non-interactive --user=vagrant -- \
-  sh -c "cd /vagrant/ansible && ansible-playbook -i inventory.yml site.yml && ansible-playbook -i inventory.yml router-config.yml"
+  sh -c "cd /vagrant/ansible && ansible-playbook -i inventory.yml site.yml --vault-password-file ~/.vault_pass && ansible-playbook -i inventory.yml router-config.yml"
