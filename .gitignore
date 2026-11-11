@@ -33,3 +33,5 @@ test/bats/
 
 # Node.js build directory
 node_modules/
+
+.vault_pass
