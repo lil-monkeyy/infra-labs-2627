@@ -50,9 +50,9 @@ sudo --login --non-interactive --user=vagrant -- \
   sh -c "pip install ansible && cd /vagrant/ansible && ansible-galaxy install -r requirements.yml"
 
 log "Copying vault password file"
-  cp /vagrant/.vault_pass /home/vagrant/.vault_pass
+  cp /vagrant/.vault_pass /home/vagrant/.vault_pass 
   chown vagrant:vagrant /home/vagrant/.vault_pass
-  chmod 600 /home/vagrant/.vault_pass"
+  chmod 600 /home/vagrant/.vault_pass
 
 log "Running Ansible site playbook"
 
