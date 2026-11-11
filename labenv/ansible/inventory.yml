@@ -13,4 +13,19 @@ all:
       hosts:
         infra010:
           ansible_host: 172.16.0.10
-
+        infra003:
+          ansible_host: 172.16.0.3
+    dmz_hosts:
+      hosts:
+        dmz020:
+          ansible_host: 192.0.2.20
+        dmz010:
+          ansible_host: 192.0.2.10
+    routers:
+      hosts:
+        r001:
+          ansible_host: 172.16.255.254
+          ansible_user: vyos
+          ansible_ssh_pass: vyos
+          ansible_network_os: vyos
+          ansible_connection: network_cli 

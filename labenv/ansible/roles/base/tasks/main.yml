@@ -1,0 +1,59 @@
+- name: Base packages install
+  ansible.builtin.apt:
+    name: "{{ base_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Create admin user
+  ansible.builtin.user:
+    name: "{{ admin_user }}"              # gebruikersnaam
+    password: "{{ admin_password | password_hash('sha512') }}"  # wachtwoord omzetten naar SHA-512-hash; vaste salt zodat het niet elke run wijzigt
+    groups: sudo                         # toevoegen aan sudoers
+    append: true                          # bestaande groepen behouden, wheel erbij
+    shell: /bin/bash                      # login-shell
+    create_home: true                     # /home/<gebruiker> aanmaken
+    state: present                        # gebruiker moet bestaan
+
+- name: Allow admin user to use sudo without password
+  ansible.builtin.copy:
+    dest: "/etc/sudoers.d/{{ admin_user }}"           # apart sudoers-bestand voor deze gebruiker
+    content: "{{ admin_user }} ALL=(ALL) NOPASSWD: ALL\n"  # alle commando's als root, zonder wachtwoord
+    owner: root                           # eigenaar root (verplicht voor sudo)
+    group: root                           # groep root
+    mode: "0440"                          # enkel leesbaar, sudo weigert ruimere rechten
+    validate: /usr/sbin/visudo -cf %s     # syntax controleren voor het bestand geplaatst wordt
+
+- name: Add SSH public keys to admin user
+  ansible.posix.authorized_key:
+    user: "{{ admin_user }}"              # gebruiker die de sleutel krijgt
+    key: "{{ item }}"                     # huidige sleutel uit de lijst
+    state: present                        # sleutel moet in authorized_keys staan
+  loop: "{{ admin_ssh_keys }}"            # taak herhalen voor elke sleutel
+
+- name: Install firewalld
+  ansible.builtin.apt:
+    name: firewalld                       # pakketnaam
+    state: present                        # moet geïnstalleerd zijn
+
+- name: Ensure firewalld is running
+  ansible.builtin.service:
+    name: firewalld                       # naam van de service
+    state: started                        # nu starten
+    enabled: true                         # automatisch starten bij boot
+
+- name: Allow services through the firewall
+  ansible.posix.firewalld:
+    service: "{{ item }}"                 # huidige service uit de lijst (ssh en mysql)
+    permanent: true                       # regel blijft na herstart
+    immediate: true                       # regel ook meteen actief
+    state: enabled                        # verkeer toelaten
+  loop: "{{ common_firewall_services + firewall_services }}" #in all.yml gaat het de common services pakken en de unieke firewall services
+
+- name: Install sysinfo script            # script dat een overzicht geeft van systeem, resources en netwerk
+  ansible.builtin.copy:
+    src: sysinfo.sh       
+    dest: /usr/local/bin/sysinfo
+    owner: root
+    group: root
+    mode: "0755"                          # uitvoerbaar voor iedereen

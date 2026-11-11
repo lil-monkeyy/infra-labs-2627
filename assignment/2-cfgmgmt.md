@@ -77,7 +77,7 @@ For clarity, some of the client/server arrows are not shown in the diagram. For 
 VMs don't get a name that is directly related to their function, but rather a generic name that is related to their subnet. This is to make it easier to re-purpose a hostname for a different function later on. Hostnames of VMs at cloud providers are also typically generic and not directly related to their function.
 
 The router can provide DNS and DHCP services and will resolve descriptive hostnames to the correct IP addresses, so that users and administrators don't have to remember the mapping between hostnames and services.
-
+ 
 ## 2.1. Set up the control node
 
 Go to the `labenv/` directory and start the control node with `vagrant up control`. This is the machine from which you will run Ansible to configure the other VMs in the environment. It has already configured the Jenkins build server from the previous assignment.
@@ -102,7 +102,7 @@ Feel free to improve the configuration of the control node to your liking. To ma
 Next, we are going to set up our first **managed node**, i.e. a host that is managed by Ansible.
 
 Add a new VM named `dmz020` (which will become our database server) to the Vagrant environment by editing the `vagrant-hosts.yml` file in the `labenv` directory.
-
+ 
 ```yaml
 - name: dmz020
   box: bento/debian-13
@@ -257,7 +257,7 @@ Since the configuration of the database is specific to the `dmz020` host, we wil
 # ansible/host_vars/dmz020.yml
 ---
 # should listen to all interfaces, not just localhost
-mariadb_bind_address: 
+mariadb_bind_address:
 
 # A database for each web application that needs it
 mariadb_databases:

@@ -1,0 +1,141 @@
+- name: "Configure router"
+  hosts: r001
+  tasks:            
+    - name: "Changing hostname to r001"
+      vyos.vyos.vyos_hostname:
+        config:
+          hostname: "r001"
+        state: merged
+
+    - name: "Configuring interfaces"
+      vyos.vyos.vyos_l3_interfaces:
+        config:
+          - name: eth2
+            ipv4:
+              - address: 192.0.2.254/24
+          - name: eth3
+            ipv4:
+              - address: 192.168.76.254/24
+        state: merged
+    
+    - name: "Adding description to interfaces"
+      vyos.vyos.vyos_interfaces:
+        config:
+          - name: eth0
+            description: WAN
+          - name: eth1
+            description: Internal
+          - name: eth2
+            description: DMZ
+            enabled: true
+          - name: eth3
+            description: Guest
+        state: merged
+    
+    - name: "Configuring NAT (only source)"
+      vyos.vyos.vyos_config:
+        lines:
+            - set nat source rule 200 description 'Outbound masquerade'
+            - set nat source rule 200 outbound-interface name 'eth0'
+            - set nat source rule 200 source address '192.168.2.0/24'
+            - set nat source rule 200 source address '172.16.0.0/16'
+            - set nat source rule 200 source address '192.168.76.0/24'
+            - set nat source rule 200 translation address 'masquerade'
+        save: true
+    #  vyos.vyos.vyos_nat:
+    #    config:
+    #      nat:
+    #        source:
+    #          rule:
+    #            - id: 200
+    #              description: "Outbound masquerade"
+    #              log: true
+    #              outbound_interface:
+    #                name: eth0
+    #              translation:
+    #                address: masquerade
+    #    state: merged
+
+    - name: "Configuring DHCP for Guest network"
+      vyos.vyos.vyos_config:
+        lines:
+            - set service dhcp-server shared-network-name 'GUEST' authoritative
+            - set service dhcp-server shared-network-name 'GUEST' subnet '192.168.76.0/24' subnet-id 10
+            - set service dhcp-server shared-network-name 'GUEST' subnet '192.168.76.0/24' range '20' start '192.168.76.10'
+            - set service dhcp-server shared-network-name 'GUEST' subnet '192.168.76.0/24' range '20' stop '192.168.76.30'
+            - set service dhcp-server shared-network-name GUEST subnet '192.168.76.0/24' option default-router '192.168.76.254'
+            - set service dhcp-server shared-network-name GUEST subnet '192.168.76.0/24' option name-server '192.168.76.254'
+        save: true
+
+    - name: "Configuring DNS"
+      vyos.vyos.vyos_config:
+        lines:
+            - set service dns forwarding listen-address '192.168.76.254'     #op ip/interface dns moet luisteren
+            - set service dns forwarding listen-address '192.0.2.254'        #op ip/interface dns moet luisteren
+            - set service dns forwarding listen-address '172.16.255.254'     #op ip/interface dns moet luisteren
+            - set service dns forwarding allow-from '192.168.76.0/24'        #welk ip/interface dns mag gebruiken van de router
+            - set service dns forwarding allow-from '192.0.2.0/24'           #welk ip/interface dns mag gebruiken van de router
+            - set service dns forwarding allow-from '172.16.0.0/16'          #welk ip/interface dns mag gebruiken van de router
+            - set service dns forwarding name-server '8.8.8.8'               #router verstuurt resolving naar 8.8.8.8 als die het niet weet
+            - set system static-host-mapping host-name 'www.infra.lan' inet '192.0.2.10'
+        save: true
+
+    - name: "Configuring ACL"
+      vyos.vyos.vyos_config:
+        lines:
+          - set policy access-list 110 description 'appserver DMZ + internet'
+          - set policy access-list 110 rule 10 action permit
+          - set policy access-list 110 rule 10 source network '192.168.76.0'
+          - set policy access-list 110 rule 10 source inverse-mask '0.0.0.255'
+          - set policy access-list 110 rule 10 destination host '192.0.2.20'
+
+          - set policy access-list 110 rule 20 action deny
+          - set policy access-list 110 rule 20 source network '192.168.76.0'
+          - set policy access-list 110 rule 20 source inverse-mask '0.0.0.255'
+          - set policy access-list 110 rule 20 destination network '172.16.0.0'
+          - set policy access-list 110 rule 20 destination inverse-mask '0.0.255.255'
+
+          - set policy access-list 110 rule 30 action deny
+          - set policy access-list 110 rule 30 source network '192.168.76.0'
+          - set policy access-list 110 rule 30 source inverse-mask '0.0.0.255'
+          - set policy access-list 110 rule 30 destination network '192.0.2.0'
+          - set policy access-list 110 rule 30 destination inverse-mask '0.0.0.255'
+
+          - set policy access-list 110 rule 40 action permit
+          - set policy access-list 110 rule 40 source network '192.168.76.0'
+          - set policy access-list 110 rule 40 source inverse-mask '0.0.0.255'
+          - set policy access-list 110 rule 40 destination any
+
+          - set policy access-list 120 description 'Internal to everyone else'
+          - set policy access-list 120 rule 10 action permit
+          - set policy access-list 120 rule 10 source network '172.16.0.0'
+          - set policy access-list 120 rule 10 source inverse-mask '0.0.255.255'
+          - set policy access-list 120 rule 10 destination any
+
+          - set policy access-list 130 description 'DMZ block to internal + updates possible'
+          - set policy access-list 130 rule 20 action permit
+          - set policy access-list 130 rule 20 source network '192.0.2.0'
+          - set policy access-list 130 rule 20 source inverse-mask '0.0.0.255'
+          - set policy access-list 130 rule 20 destination any
+
+          - set policy access-list 130 rule 10 action deny
+          - set policy access-list 130 rule 10 source network '192.0.2.0'
+          - set policy access-list 130 rule 10 source inverse-mask '0.0.0.255'
+          - set policy access-list 130 rule 10 destination network '172.16.0.0'
+          - set policy access-list 130 rule 10 destination inverse-mask '0.0.255.255'
+
+          - set policy access-list 140 description 'Only internal has access to DNS in internal'
+          - set policy access-list 140 rule 10 action permit
+          - set policy access-list 140 rule 10 source network '172.16.0.0'
+          - set policy access-list 140 rule 10 source inverse-mask '0.0.255.255'
+          - set policy access-list 140 rule 10 destination host '172.16.0.3'
+
+          - set policy access-list 140 rule 20 action deny
+          - set policy access-list 140 rule 20 source any
+          - set policy access-list 140 rule 20 destination host '172.16.0.3'
+
+        save: true
+
+    - name: "Saving configuration"
+      vyos.vyos.vyos_config:
+        save: true

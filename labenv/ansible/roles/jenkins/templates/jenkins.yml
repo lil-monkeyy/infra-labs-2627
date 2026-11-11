@@ -1,0 +1,355 @@
+configuration-as-code:
+  deprecated: "reject"
+  restricted: "reject"
+  unknown: "reject"
+  version: "1"
+credentials:
+  folder: {
+    }
+  providerImpl: {
+    }
+  system:
+    domainCredentials:
+    - credentials:
+      - usernamePassword:
+          description: "auth for private git-repos"
+          id: "5a6a802e-3a3f-46df-afd2-6fd471788307"
+          password: "{AQAAABAAAABglilCetv9RCBC70dsmf807AHAkQP7DT9Z+99Dn/r//g198Zgj9lVy5+YojJ9/vK9moewdx1e7BITqbGZjBD1pW0L4XTYdwuVczjnLb8bRNuTz/uUlq5yU+5NUEYSWQOevu4saFTHdFv5ZzTgaf8EfEw==}"
+          scope: GLOBAL
+          username: "lil-monkeyy"
+      - basicSSHUserPrivateKey:
+          id: "dev-repo"
+          passphrase: "{AQAAABAAAAAQZ98zbZz9/svmnyKCAsmZ5wV57EXfrzoUR3orcQRSgmg=}"
+          privateKeySource:
+            directEntry:
+              privateKey: "{AQAAABAAAAHA89IcBevaZ7VGvVmi4u6z88DUUQD7frtJrnfO68s8xcyrWn11JikZbtOILZedOZo8VOJuwbCI+OU3Tn4f9TO/wWLgGwdOukDWuksOQw4CrJRVi6ejKXWKU6cOWJrf/Z4rB25ECevE5MblmeGxMl4o862MD8w29uUxY9zw/saixDGR2tQHfJQn0CiDSgHHO+MuFM0nKDyVSMYZUrtHkcJGZJ30s3bJdvM8RdnynKcREPCMJCPTp1eRz+3qIHzoNJCSojAm5++9LWHQZV1B13NJDWhvQiaxqvqcG1/tAmGiTQ/W1KbunmLaN8dv2C8EwGOq/TFJqLJUnFJlI8/ELSuOVRTXTuQBmi89K0zgM7HzsSmfgd2vo1+mf/cPh7mlY5jtWB56fWL3CJGNB9r37HSPI0bNEJTZcJldINWqthALKZNo1wghdimrzyv0Qe2XKbJVnjfMpH2pSA5eUC1awNPo0QMKye1MEZF/zh+e7I04g8qAXU1j1fEywpbKXA6F9qeqaR9zg3DApjCpV3yChmQ5UkP+GylgsMFEHzX3/dFnPw/njZcxdkem1kXVZlnSEVKU04aaE4R1KCuP08hOuqGIcVsAUj96SsY3GEacXswEShk=}"
+          scope: GLOBAL
+          username: "lil-monkeyy"
+      - basicSSHUserPrivateKey:
+          id: "ops-repo"
+          privateKeySource:
+            directEntry:
+              privateKey: "{AQAAABAAAAGQ41qJcLUJthgoncWI/05fyWl+mtbRR5/H1G8IvnKwlGjeWT7PKI+9tSerx5RE/bbPvTt+/h8xViuuVte98lgx6QqKTzGwdAhy8Um/UvZcU+aetupppwMwZd2/0B/ynDEkp6bbO0CqNg9moiQk2aLPyRpU1mBhIMw9B0Re0PKT1dNfD9Yb6ZOQlbDbvm49a3SpkmYtmQmNMzHCWLBw6Dp5K443yRk8XF4iyIk/sR1hULxfZAyveMQ5h0cR6ug/Lz8/QKz6E+Bf2ZTazFFkPqe6LBLimheJtm0l0WjWOZfOAvX1zdYetV5Lrg69bo8rVKjTH6q7x5+lN/wVRLqjaA75i5HH8dzFbi6bXspK8ckm/FKQap4qPyRGKUPgba9r8yw5OpHxMvi5H0XEOxn4w3PcDKGUaglsduqPC+dZRlD1cLyJwWf7MUFxAY8YzSxOacd3pcLviQDfKy/HdNHlwkx6E9WMakysNC/PW8H72hctNKCNdgIvRhNdF5cEyNt3DazPWse9vwKVru8g+CMjn9qLwyOxbvXGP7DL/0BleaNyJmg=}"
+          scope: GLOBAL
+          username: "lil-monkeyy"
+      - file:
+          fileName: ".env"
+          id: "app-env-file"
+          scope: GLOBAL
+          secretBytes: "{2H9Q6lgqZIgHgW8SJRgkpJgdA3iF8w6/hImDx0SlFc4uGIMRpsriUhKFrq0YXNxqd3FI1Y8FYLHEf1pUQ9plHTqWYmzLeDmnQ5nZbLS6el/rUtwXGNMA6YCv2bBgCpuHX9LuoNpJTxoW9jRAQ1wwW9KFXdIWGpUE1FWt8x52XxoMt2UZuZvEvZhESEMXUXrCFLYgNa0x4O+YBz1KLia19PDpge4nu+WVpDbn22X+uD2U6Zgdxm4NBNU+qtoq+kAi/v2dNDtSlWC2Ne7uwwOE0N11L0Y+m+Ulzui/Lqx7REsSPv0xNb5nbhkpbtsjUqr7tmvhd4A+F0BP9YbbtrxUOiXRUnNN9t0TZgRuF9D1nIX97OUZvJevhJsq12rxiw0WkxB+coSU5z4mZtPEYC/HktVymVG2mhzSoA7e7VtYVuoqjUGpQBv93GVcOpE7hkTtnu5MhBwTSqFdbPd/hjGg/lDQqFKNZIAaOa9EgHW8slU=}"
+      domain: {
+        }
+  user: {
+    }
+jenkins:
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  crumbIssuer: "standard"
+  disableRememberMe: false
+  disabledAdministrativeMonitors:
+  - "jenkins.monitor.JavaVersionRecommendationAdminMonitor-21-2027-09-30-WARNING"
+  - "hudson.model.UpdateCenter$CoreUpdateMonitor"
+  - "jenkins.diagnostics.ControllerExecutorsNoAgents"
+  - "jenkins.security.UpdateSiteWarningsMonitor"
+  - "jenkins.security.csp.impl.CspRecommendation"
+  - "hudson.diagnosis.ReverseProxySetupMonitor"
+  labelAtoms:
+  - name: "built-in"
+  log: {
+    }
+  markupFormatter: "plainText"
+  mode: NORMAL
+  nodeMonitors:
+  - "architecture"
+  - "clock"
+  - diskSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - "swapSpace"
+  - tmpSpace:
+      freeSpaceThreshold: "1GiB"
+      freeSpaceWarningThreshold: "2GiB"
+  - "responseTime"
+  numExecutors: 2
+  primaryView:
+    all:
+      name: "all"
+  projectNamingStrategy: "standard"
+  quietPeriod: 5
+  scmCheckoutRetryCount: 0
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      passwordComplexityRule: "nonePasswordComplexity"
+      users:
+      - id: "admin"
+        name: "admin"
+        password: "admin"
+        properties:
+        - "apiToken"  
+        - "consoleUrlProvider"
+        - "viewsTabBar"
+        - myView:
+            viewsTabBar: "standard"
+        - "timezone"
+        - "experimentalFlags"
+        - theme:
+            theme: "noOp"
+        - "mailer"
+        - preferredProvider:
+            providerId: "default"
+  slaveAgentPort: 50000
+  updateCenter:
+    sites:
+    - id: "default"
+      url: "https://updates.jenkins.io/update-center.json"
+  views:
+  - all:
+      name: "all"
+  viewsTabBar: "standard"
+globalCredentialsConfiguration:
+  configuration:
+    providerFilter: "none"
+    typeFilter: "none"
+appearance:
+  consoleUrlProvider: {
+    }
+  pipelineGraphView:
+    showGraphOnBuildPage: false
+    showGraphOnJobPage: false
+    showStageDurations: false
+    showStageNames: false
+  prism:
+    theme: PRISM
+  themeManager:
+    disableUserThemes: false
+    theme: "noOp"
+security:
+  apiToken:
+    creationOfLegacyTokenEnabled: false
+    tokenGenerationOnCreationEnabled: false
+    usageStatisticsEnabled: true
+  apiTokenProperty: {
+    }
+  contentSecurityPolicy:
+    enforce: false
+  cps:
+    hideSandbox: false
+  crumb: {
+    }
+  gitHooks:
+    allowedOnAgents: false
+    allowedOnController: false
+  gitHostKeyVerificationConfiguration:
+    sshHostKeyVerificationStrategy: "acceptFirstConnectionStrategy"
+  globalJobDslSecurityConfiguration:
+    useScriptSecurity: true
+  prism:
+    protectSourceCodeByPermission: false
+  queueItemAuthenticator: {
+    }
+  sSHD:
+    port: -1
+  scriptApproval:
+    forceSandbox: false
+  updateSiteWarningsConfiguration: {
+    }
+unclassified:
+  administrativeMonitorsConfiguration: {
+    }
+  artifactManager: {
+    }
+  buildDiscarders:
+    configuredBuildDiscarders:
+    - "jobBuildDiscarder"
+  buildStepOperation:
+    enabled: false
+  casCGlobalConfig: {
+    }
+  computerRetentionCheckInterval: {
+    }
+  defaultDisplayUrlProvider: {
+    }
+  defaultFolderConfiguration: {
+    }
+  defaultView: {
+    }
+  email-ext:
+    adminRequiredForTemplateTesting: false
+    allowUnregisteredEnabled: false
+    charset: "UTF-8"
+    debugMode: false
+    defaultAttachBuildLog: 0
+    defaultBody: |-
+      $PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
+
+      Check console output at $BUILD_URL to view the results.
+    defaultSubject: "$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!"
+    defaultTriggerIds:
+    - "hudson.plugins.emailext.plugins.trigger.FailureTrigger"
+    mailAccount: {
+      }
+    maxAttachmentSize: -1
+    maxAttachmentSizeMb: -1
+    precedenceBulk: false
+    throttlingEnabled: false
+    watchingEnabled: false
+  enrichedSummaryConfig:
+    enrichedSummaryEnabled: false
+    globalBuildScanDetection: false
+    httpClientDelayBetweenRetriesInSeconds: 1
+    httpClientMaxRetries: 3
+    httpClientTimeoutInSeconds: 1
+  envVarsFilter: {
+    }
+  fingerprints:
+    fingerprintCleanupDisabled: false
+    storage: "file"
+  gitHubConfiguration:
+    apiRateLimitChecker: ThrottleForNormalize
+  gitHubPluginConfig:
+    hookUrl: "http://172.16.0.10:8080/github-webhook/"
+  globalDefaultFlowDurabilityLevel: {
+    }
+  globalLibraries: {
+    }
+  globalTimeOutConfiguration:
+    operations:
+    - "abortOperation"
+    overwriteable: false
+  globalUntrustedLibraries: {
+    }
+  injectionConfig:
+    allowUntrusted: false
+    checkForBuildAgentErrors: false
+    enabled: false
+    enforceUrl: false
+    injectCcudExtension: false
+    injectMavenExtension: false
+  junitTestResultStorage:
+    storage: "file"
+  location:
+    adminAddress: "address not configured yet <nobody@nowhere>"
+    url: "http://172.16.0.10:8080/"
+  mailer:
+    charset: "UTF-8"
+    useSsl: false
+    useTls: false
+  myView: {
+    }
+  nodeProperties: {
+    }
+  plugin: {
+    }
+  pollSCM:
+    pollingThreadCount: 10
+  projectNamingStrategy: {
+    }
+  proxyConfigurationManager: {
+    }
+  quietPeriod: {
+    }
+  resourceRoot: {
+    }
+  scmGit:
+    addGitTagAction: false
+    allowSecondFetch: false
+    createAccountBasedOnEmail: false
+    disableGitToolChooser: false
+    hideCredentials: false
+    showEntireCommitSummaryInChanges: false
+    useExistingAccountWithSameEmail: false
+  scmRetryCount: {
+    }
+  shell: {
+    }
+  timestamper:
+    allPipelines: false
+    elapsedTimeFormat: "'<b>'HH:mm:ss.S'</b> '"
+    systemTimeFormat: "'<b>'HH:mm:ss'</b> '"
+  usageStatistics: {
+    }
+  viewsTabBar: {
+    }
+tool:
+  dotNetConfiguration:
+    buildAllowed: true
+    cleanAllowed: true
+    listPackageAllowed: true
+    nuGetDeleteAllowed: true
+    nuGetLocalsAllowed: true
+    nuGetPushAllowed: true
+    packAllowed: true
+    publishAllowed: true
+    restoreAllowed: true
+    telemetryOptOut: true
+    testAllowed: true
+    toolRestoreAllowed: true
+  dotnetsdk:
+    installations:
+    - name: "dotnet-10"
+      properties:
+      - installSource:
+          installers:
+          - installDotNetSDK:
+              release: "10.0.12"
+              sdk: "10.0.401"
+              url: "https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.401/dotnet-sdk-10.0.401-linux-x64.tar.gz"
+              version: ".NET 10.0"
+  git:
+    installations:
+    - home: "git"
+      name: "Default"
+  mavenGlobalConfig:
+    globalSettingsProvider: "standard"
+    settingsProvider: "standard"
+jobs:
+  - script: |
+      pipelineJob('BuildDotNet-demo') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/lil-monkeyy/dotnet-demo-app.git')
+                  credentials('5a6a802e-3a3f-46df-afd2-6fd471788307')
+                }
+                branch('*/main')
+              }
+            }
+            scriptPath('dotNetJenkinsfile')
+          }
+        }
+      }
+      job('BuildSampleApp') {
+        scm {
+          git {
+            remote {
+              url('https://github.com/lil-monkeyy/cicd-sample-app-.git')
+            }
+            branch('*/main')
+          }
+        }
+        steps {
+          shell('bash ./cicd-sample-app/sample-app.sh')
+        }
+      }
+      job('TestSampleApp') {
+        scm {
+          git {
+            remote {
+              url('https://github.com/lil-monkeyy/cicd-sample-app-.git')
+            }
+            branch('*/main')
+          }
+        }
+        triggers {
+          upstream('TestSampleApp', 'SUCCESS')
+        }
+        steps {
+          shell('curl http://172.17.0.1:5050/ | grep "You are calling me from 172.17.0.1"')
+        }
+      }    
+      

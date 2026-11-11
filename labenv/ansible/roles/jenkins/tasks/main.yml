@@ -1,0 +1,50 @@
+---
+- name: Install Docker SDK for Python
+  ansible.builtin.apt:
+    name: python3-docker
+    state: present
+
+- name: Create directory on infra010
+  ansible.builtin.file:
+    path: "/opt/jenkins"
+    state: directory
+    mode: "0755"
+
+- name: Copy Dockerfile and plugins.txt to infra010
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/opt/jenkins/{{ item }}"
+    mode: "0644"
+  loop:
+    - Dockerfile
+    - plugins.txt
+
+- name: Copy jenkins config to infra010
+  ansible.builtin.template:
+    src: jenkins.yml
+    dest: "/opt/jenkins/jenkins.yml"
+    mode: "0644"
+
+- name: Build Jenkins image
+  community.docker.docker_image:
+    name: "my-jenkins:latest"
+    source: build
+    build:
+      path: "/opt/jenkins"
+
+- name: Run Jenkins container
+  community.docker.docker_container:
+    name: "jenkins_server"
+    image: "my-jenkins:latest"
+    state: started
+    restart_policy: unless-stopped
+    user: root
+    published_ports:
+      - "8080:8080"
+    volumes:
+      - jenkins-data-casc:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    env:
+      JENKINS_ADMIN_PASSWORD: "{{ jenkins_admin_password }}"
+      GITHUB_TOKEN: "{{ github_token }}"
+  no_log: true

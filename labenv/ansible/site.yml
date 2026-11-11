@@ -3,5 +3,54 @@
 
 - name: "Configure infra010"
   hosts: infra010
+  vars_files:
+    - vault.yml
   roles:
     - dockerhost
+    - jenkins
+
+- name: "Configure infra003"
+  hosts: infra003
+  roles:
+    - base
+    - Oefenweb.dnsmasq
+  pre_tasks:
+    - name: "create resolv-file for dnsmasq"
+      ansible.builtin.copy:
+        content: |
+          nameserver 8.8.8.8
+        dest: /etc/resolv.dnsmasq
+
+
+- name: "Configure dmz020"  # naam van de taak
+  hosts: dmz020             # op welke hosts de taak uitgevoerd wordt
+  roles:                    # dit is een playbook dat extern gedownload wordt waar andere taken etc in staan, deze gaat mariadb installeren op de target host
+    - fauust.mariadb
+    - base                  #gaat de base packages installeren dat in all.yml staan
+  tasks:                    # gaat de taken een nummer en naam geven zodat iedereen weet wat ze doen
+    - name: "Show a message from the managed node"
+      ansible.builtin.debug:
+        msg: "Hello from {{ ansible_facts.hostname }}!"
+
+- name: "Configure Webserver dmz010"
+  hosts: dmz010
+  roles:
+    - dockerhost
+    - base
+    - geerlingguy.nginx
+  pre_tasks:
+    - name: ".cert bestand voor HTTPS overzetten"
+      ansible.builtin.copy:
+        src: files/ssl/dmz010.crt
+        dest: /etc/ssl/certs
+        owner: root
+        group: root
+        mode: "0644"              #Eigenaar leest en schrijft, rest enkel lezen
+
+    - name: ".key bestand voor HTTPS overzetten"
+      ansible.builtin.copy:
+        src: files/ssl/dmz010.key
+        dest: /etc/ssl/private
+        owner: root
+        group: root
+        mode: "0600"              #Alleen root mag lezen en schrijven

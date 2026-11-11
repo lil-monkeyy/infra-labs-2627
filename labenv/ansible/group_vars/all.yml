@@ -1,0 +1,11 @@
+admin_user: Hatim
+admin_password: "root"
+admin_ssh_keys:
+  - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOETrPfzSBWmIfbH5chUgzDz134fqYnhWYgSJni5enUE ansibleLabo2"
+firewall_services: []
+common_firewall_services: 
+  - ssh
+base_packages:
+  - fastfetch
+  - vim
+  - lynis

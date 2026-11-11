@@ -1,0 +1,4 @@
+roles:
+  - name: fauust.mariadb
+  - name: geerlingguy.nginx
+  - name: Oefenweb.dnsmasq

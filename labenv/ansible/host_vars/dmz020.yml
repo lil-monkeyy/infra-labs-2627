@@ -1,0 +1,23 @@
+# ansible/host_vars/dmz020.yml
+---
+# should listen to all interfaces, not just localhost
+mariadb_bind_address: 0.0.0.0
+
+# A database for each web application that needs it
+mariadb_databases:
+  - name: db1
+    collation: utf8_general_ci
+    encoding: utf8
+    replicate: false
+# Check the documentation to see how to create two databases!
+
+# A user for each database, with a strong password and restricted to log in
+# from the web server
+mariadb_users:
+  - name: user
+    host: 192.0.2.20
+    password: user
+    priv: "*.*:USAGE/db1.*:ALL"
+# Check the documentation to see how to create users!
+
+firewall_services: [mysql]

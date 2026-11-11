@@ -1,0 +1,7 @@
+firewall_services:
+  - http
+  - https
+firewall_ports:
+  - 8080/tcp
+jenkins_admin_password: "{{ vault_jenkins_admin_password }}"
+github_token: "{{ vault_github_token }}"

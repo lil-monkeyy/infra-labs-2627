@@ -1,0 +1,15 @@
+firewall_services:
+  - dns
+
+dnsmasq_dnsmasq_d_files_present: 
+  main:
+    - domain-needed
+    - bogus-priv
+    - resolv-file=/etc/resolv.dnsmasq
+    - listen-address=127.0.0.1,172.16.0.3
+
+  hosts:
+    - host-record=control,172.16.0.2
+    - host-record=infra020,172.16.0.20
+    - host-record=infra010,172.16.0.10
+    - host-record=infra003,172.16.0.3
