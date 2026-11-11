@@ -47,8 +47,7 @@ dnf install --assumeyes \
   vim-enhanced
 
 sudo --login --non-interactive --user=vagrant -- \
-  pip install ansible
-  sh -c "cd /vagrant/ansible && ansible-galaxy install -r requirements.yml"
+  sh -c "pip install ansible && cd /vagrant/ansible && ansible-galaxy install -r requirements.yml"
 log "Running Ansible site playbook"
 
 sudo --login --non-interactive --user=vagrant -- \
