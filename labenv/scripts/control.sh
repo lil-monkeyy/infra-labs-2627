@@ -48,8 +48,8 @@ dnf install --assumeyes \
 
 sudo --login --non-interactive --user=vagrant -- \
   pip install ansible
-
+  sh -c "cd /vagrant/ansible && ansible-galaxy install -r requirements.yml"
 log "Running Ansible site playbook"
 
 sudo --login --non-interactive --user=vagrant -- \
-  sh -c "cd /vagrant/ansible && ansible-playbook -i inventory.yml site.yml"
+  sh -c "cd /vagrant/ansible && ansible-playbook -i inventory.yml site.yml && ansible-playbook -i inventory.yml router-config.yml"
